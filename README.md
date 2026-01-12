@@ -1,6 +1,6 @@
-# GTA Key Automation Tool for PS4 / PS5 Console
+# GTA Automation Tool for Console [PS4/PS5/XBOX]
 
-This tool lets you **automate in-game actions** by replaying controller-style inputs.
+This tool lets you **automate in-game actions** by replaying controller-style inputs into 
 
 Instead of pressing buttons manually, you create or use existing scripts that tell the program:
 
@@ -19,9 +19,6 @@ The program then runs that script for you, consistently and automatically.
 - Use controller-style names (D-Pad, Cross, Circle, etc.) instead of raw keyboard keys
 
 This is especially useful for tasks that require **timing, repetition, or waiting for menus/screens to appear**.
-
-
-
 
 ## Requirements
 
@@ -91,12 +88,10 @@ You do **not** need to write code.
 Scripts are written in **JSON** and describe actions in plain language.
 
 📺 **YouTube Tutorial:**  
-[LINK COMING SOON]
-
-
+[LINK COMING SOON] 
 ---
 
-## Input Mapping
+# Input Mapping
 
 Scripts use **controller-style names** (for example: D-Pad, Cross, Circle).
 
@@ -104,20 +99,22 @@ Internally, these are mapped to keyboard keys so the game or Chiaki receives inp
 
 ---
 
-## Image Matching
+# Image Matching
 
 - Capture a **BMP image** of the screen you want to detect
 - The program compares the live screen to that image
 - When the match percentage is high enough, the script continues
 
+# Thank You
 
+Thank you to everyone who has contributed ideas, testing, feedback, and support. 
 
-## Thank You
-
-Thank you to everyone who has contributed ideas, testing, feedback, and support.
+**Specific shoutsout**
+- HoodieNinja
+- Spike
 
 ---
 
-## Disclaimer
+# Disclaimer
 
 Use this tool responsibly and in accordance with the rules of the software or game you are automating.
