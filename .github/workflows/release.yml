@@ -1,0 +1,79 @@
+# Name of the workflow as it appears in the GitHub Actions UI
+name: Release
+
+# This workflow runs only when a Git tag starting with "v" is pushed
+# Examples:
+#   v0.0.1
+#   v1.2.3
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build-and-release:
+    # Use macOS because:
+    # - You can build macOS binaries
+    # - You can cross-compile Windows binaries
+    # - You already target macOS and Windows
+    runs-on: macos-latest
+
+    # Required permission to create releases and upload assets
+    permissions:
+      contents: write
+
+    steps:
+      # Step 1: Check out the repository at the tagged commit
+      # This ensures the build matches the exact source being released
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Step 2: Install the .NET SDK needed to build the project
+      # Uses the latest available .NET 10 SDK
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      # Step 3: Read the Version property from the .csproj file
+      # This treats the csproj as the single source of truth for versioning
+      # The value is stored as a step output for later use
+      - name: Read version from csproj
+        id: version
+        run: |
+          VERSION=$(dotnet msbuild csharp_gta_keyautomation.csproj -getProperty:Version -nologo)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      # Step 4: Ensure the Git tag matches the csproj version exactly
+      # Example:
+      #   Tag: v0.0.1
+      #   csproj Version: 0.0.1
+      #
+      # If these do not match, the workflow exits with failure
+      # This prevents publishing incorrect or mismatched releases
+      - name: Verify tag matches csproj version
+        run: |
+          TAG_VERSION=${GITHUB_REF_NAME#v}
+          if [ "$TAG_VERSION" != "${{ steps.version.outputs.version }}" ]; then
+            echo "Tag version does not match csproj version"
+            exit 1
+          fi
+
+      # Step 5: Build all binaries using the Makefile
+      # The Makefile is responsible for:
+      # - Publishing per-RID binaries
+      # - Producing versioned ZIP files in dist/
+      - name: Build binaries
+        run: make
+
+      # Step 6: Create a GitHub Release and upload all ZIP files
+      # - The release is associated with the pushed tag
+      # - The release is marked as a pre-release (alpha)
+      # - All ZIP files in dist/ are attached as assets
+      - name: Create GitHub Release and upload assets
+        uses: softprops/action-gh-release@v2
+        with:
+          prerelease: ${{ startsWith(steps.version.outputs.version, '0.') }}
+          generate_release_notes: true
+          files: |
+            dist/*.zip

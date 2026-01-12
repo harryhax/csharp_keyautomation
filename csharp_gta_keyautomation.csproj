@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(RuntimeIdentifier)'=='win-x64'">
+    <DefineConstants>$(DefineConstants);WINDOWS</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(RuntimeIdentifier)'=='osx-x64' Or '$(RuntimeIdentifier)'=='osx-arm64'">
+    <DefineConstants>$(DefineConstants);OSX</DefineConstants>
+  </PropertyGroup> 
+
+ <PropertyGroup>
+  <Version>0.0.1</Version>
+  <FileVersion>$(Version).0</FileVersion>
+  <AssemblyVersion>0.0.0.0</AssemblyVersion>
+</PropertyGroup>
+
+  <!--
+<PropertyGroup Condition="'$(RuntimeIdentifier)'=='linux-x64'">
+  <DefineConstants>$(DefineConstants);LINUX</DefineConstants>
+</PropertyGroup-->
+
+  <!-- macOS Intel minimum version: 10.15 -->
+  <ItemGroup Condition="'$(RuntimeIdentifier)' == 'osx-x64'">
+    <RuntimeHostConfigurationOption Include="System.Runtime.InteropServices.OSPlatform.OSX.MinimumOSVersion" Value="10.15" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+
+    <Content Include="Scripts\**\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.1" />
+  </ItemGroup>
+
+</Project>
