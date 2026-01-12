@@ -10,7 +10,6 @@ Instead of pressing buttons manually, you create or use existing scripts that te
 
 The program then runs that script for you, consistently and automatically.
 
----
 
 ## What You Can Do With It
 
@@ -21,11 +20,33 @@ The program then runs that script for you, consistently and automatically.
 
 This is especially useful for tasks that require **timing, repetition, or waiting for menus/screens to appear**.
 
+
+
+
+## Requirements
+
+- A supported desktop operating system
+- [Chiaki](https://github.com/streetpea/chiaki-ng/releases)/[Chiaki-ng](https://streetpea.github.io/chiaki-ng/) or another application that accepts keyboard input
+- The target window must stay focused while automation is running
+- Screen resolution and UI layout must match your image templates
+
 ---
 
-## Using This Tool with Chiaki or Chiaki-ng (PS Remote Play)
+## Important Notes
 
-This tool is commonly used alongside **Chiaki / Chiaki-NG**, a third-party PlayStation Remote Play client.
+- Do not use the keyboard or mouse while a script is running
+- Screen resolution or UI changes can break image matching
+- Image templates must be BMP format
+- This tool does **not** modify the game or console
+
+---
+
+
+---
+
+# Chiaki or Chiaki-ng (PS Remote Play)
+
+This tool is commonly used alongside **Chiaki / Chiaki-ng**, a third-party PlayStation Remote Play client. You must download Chiaki or Chiaki-ng in order to use the keyboard as controller input. The Sony Remote Play App **will not** support input like that. 
 
 When used together:
 
@@ -33,12 +54,18 @@ When used together:
 - This tool sends keyboard input to Chiaki
 - The automation engine reacts to what appears on the streamed video feed
 
-This allows automation of console gameplay **without modifying the console or the game itself**.
+This allows automation of console gameplay **without modifying the console or the game itself**, so it is impossible to detect this specific application.
 
-### Chiaki Setup Guide (Video)
+# Chiaki Setup Guide (Video)
 
-📺 **YouTube Tutorial:**  
-[LINK COMING SOON]
+Chiaki and/or Chiaki-ng are sometimes difficult to download when you have never done it before, so I created a YouTube tutorial on how to set it up properly to use with this rp.
+
+### 📺 **YouTube Tutorial:**  
+
+- [HarryHax Chiaki Tutorial](https://youtu.be/iadzYtX4ERU)
+
+
+
 
 ---
 
@@ -66,13 +93,6 @@ Scripts are written in **JSON** and describe actions in plain language.
 📺 **YouTube Tutorial:**  
 [LINK COMING SOON]
 
----
-
-## Image Matching
-
-- Capture a **BMP image** of the screen you want to detect
-- The program compares the live screen to that image
-- When the match percentage is high enough, the script continues
 
 ---
 
@@ -84,23 +104,13 @@ Internally, these are mapped to keyboard keys so the game or Chiaki receives inp
 
 ---
 
-## Requirements
+## Image Matching
 
-- A supported desktop operating system
-- Chiaki or another application that accepts keyboard input
-- The target window must stay focused while automation is running
-- Screen resolution and UI layout must match your image templates
+- Capture a **BMP image** of the screen you want to detect
+- The program compares the live screen to that image
+- When the match percentage is high enough, the script continues
 
----
 
-## Important Notes
-
-- Do not use the keyboard or mouse while a script is running
-- Screen resolution or UI changes can break image matching
-- Image templates must be BMP format
-- This tool does **not** modify the game or console
-
----
 
 ## Thank You
 
