@@ -1,0 +1,15 @@
+{
+  "title": "Workout Repeat",
+  "description": "This will repeatedly press the X button for the amount of times you decide. Make sure you are already using a weight machine or chin-up bar before starting."
+  ,
+  "Run": {
+    "repeat": {
+      "mode": "prompt",
+      "default": 1000
+    },
+    "steps": [
+      { "type": "tap", "key": "CROSS", "holdMs": 100, "sleepAfterMs": 0 },
+      { "type": "tap", "key": "DPAD_RIGHT", "holdMs": 100, "sleepAfterMs": 0 }
+    ]
+  }
+}

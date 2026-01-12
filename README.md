@@ -1,222 +1,113 @@
-# Release & Versioning Workflow
+# GTA Key Automation Tool for PS4 / PS5 Console
 
-This repository uses a **tag‑driven, automated release pipeline** built around the following principles:
+This tool lets you **automate in-game actions** by replaying controller-style inputs.
 
-- The `.csproj` file is the **single source of truth** for version numbers
-- **Git tags** explicitly mark release points
-- **GitHub Actions** builds and publishes binaries automatically
-- Releases are **pre‑releases** for `0.x.y` versions and **stable** for `1.x.y+`
-- No binaries are committed to Git
+Instead of pressing buttons manually, you create or use existing scripts that tell the program:
 
-This document explains **exactly how the setup works** and **how to perform a release correctly**.
+- which buttons to press  
+- how long to wait  
+- when to continue based on what the screen looks like  
 
----
-
-## High‑Level Architecture
-
-```
-Developer
-  │
-  ├─ edits code
-  ├─ updates <Version> in csproj
-  ├─ commits changes
-  ├─ creates & pushes a tag
-  ▼
-GitHub Actions
-  ├─ validates tag == csproj version
-  ├─ runs Makefile
-  ├─ builds OS‑specific binaries
-  ├─ zips artifacts
-  ├─ creates GitHub Release
-  └─ uploads assets
-```
-
-Releases are **explicit and intentional**. Nothing is published automatically on normal `git push`.
+The program then runs that script for you, consistently and automatically.
 
 ---
 
-## Source of Truth: Versioning
+## What You Can Do With It
 
-### Where the version lives
+- Automate repeated in-game actions
+- Trigger inputs only when a specific screen appears (screen detection / compare)
+- Run the same sequence multiple times without manual input
+- Use controller-style names (D-Pad, Cross, Circle, etc.) instead of raw keyboard keys
 
-The project version is defined in the `.csproj` file:
-
-```xml
-<PropertyGroup>
-  <Version>0.0.1</Version>
-  <AssemblyVersion>0.0.1.0</AssemblyVersion>
-  <FileVersion>0.0.1.0</FileVersion>
-</PropertyGroup>
-```
-
-This version:
-- Determines the Git tag name
-- Determines release filenames
-- Determines whether the release is a pre‑release
-
-### Version rules
-
-| Version pattern | Release type |
-|-----------------|--------------|
-| `0.x.y`         | Pre‑release (alpha/beta) |
-| `1.x.y`+        | Stable release |
+This is especially useful for tasks that require **timing, repetition, or waiting for menus/screens to appear**.
 
 ---
 
-## Git Tags and Releases
+## Using This Tool with Chiaki or Chiaki-ng (PS Remote Play)
 
-### Why tags are required
+This tool is commonly used alongside **Chiaki / Chiaki-NG**, a third-party PlayStation Remote Play client.
 
-GitHub Releases are triggered **only** by pushing tags that start with `v`:
+When used together:
 
-```yaml
-on:
-  push:
-    tags:
-      - "v*"
-```
+- Chiaki streams the PlayStation to your computer
+- This tool sends keyboard input to Chiaki
+- The automation engine reacts to what appears on the streamed video feed
 
-This means:
-- Normal `git push` does **not** create a release
-- Releases only happen when you **explicitly tag a commit**
+This allows automation of console gameplay **without modifying the console or the game itself**.
 
-### Correct tag format
+### Chiaki Setup Guide (Video)
 
-```
-v<Version>
-```
-
-Examples:
-- `v0.0.1`
-- `v0.1.0`
-- `v1.0.0`
-
-The workflow **fails** if the tag does not exactly match the version in the `.csproj`.
+📺 **YouTube Tutorial:**  
+[LINK COMING SOON]
 
 ---
 
-## Makefile Responsibilities
+## How It Works (High Level)
 
-The Makefile is responsible for:
+1. You create a **script file** that defines a sequence of steps
+2. Each step can:
+   - Press a button
+   - Wait for a period of time
+   - Wait until the screen matches a reference image
+3. The tool:
+   - Sends keyboard input to the game (via Chiaki or directly)
+   - Captures the screen
+   - Compares it against saved image templates
+4. Once all steps complete, the script ends
 
-- Reading the version from the `.csproj`
-- Building binaries for each RID
-- Producing versioned ZIP files
-
-### Supported targets
-
-- `make` – builds all distributions
-
-This command:
-1. Reads the version from the `.csproj`
-2. Creates the tag `v<Version>`
-3. Pushes the tag to GitHub
-
-It **does not**:
-- Increment versions
-- Modify files
-- Commit changes
-
-You must update and commit the version **before** running `make tag`.
+You do **not** need to write code.
 
 ---
 
-## GitHub Actions Workflow
+## Writing Automation Scripts
 
-The workflow file lives at:
+Scripts are written in **JSON** and describe actions in plain language.
 
-```
-.github/workflows/release.yml
-```
-
-### What the workflow does
-
-When a tag is pushed:
-
-1. Checks out the tagged commit
-2. Reads the version from the `.csproj`
-3. Verifies the tag matches the version
-4. Runs `make`
-5. Builds OS‑specific binaries
-6. Creates a GitHub Release
-7. Uploads ZIP files as release assets
-8. Marks the release as pre‑release or stable automatically
-
-### Pre‑release logic
-
-```yaml
-prerelease: ${{ startsWith(version, '0.') }}
-```
-
-This ensures:
-- All `0.x` versions are marked unstable
-- Stable releases begin at `1.0.0`
+📺 **YouTube Tutorial:**  
+[LINK COMING SOON]
 
 ---
 
-## How to Do a Release (Canonical Steps)
+## Image Matching
 
-This is the **only correct release procedure**.
-
-### 1. Make code changes
-
-Commit as many development commits as needed.
+- Capture a **BMP image** of the screen you want to detect
+- The program compares the live screen to that image
+- When the match percentage is high enough, the script continues
 
 ---
 
-### 2. Update the version
+## Input Mapping
 
-Edit the `.csproj`:
+Scripts use **controller-style names** (for example: D-Pad, Cross, Circle).
 
-```xml
-<Version>0.0.2</Version>
-```
+Internally, these are mapped to keyboard keys so the game or Chiaki receives input normally.
 
 ---
 
-### 3. Commit the version bump
+## Requirements
 
-```bash
-git add csharp_gta_keyautomation.csproj
-git commit -m "Bump version to 0.0.2"
-```
-
----
-
-### 4. Create and push the tag
-
-```bash
-git tag vX.Y.Z
-git push origin vX.Y.Z
-```
-
-This triggers the entire release pipeline on GitHub
+- A supported desktop operating system
+- Chiaki or another application that accepts keyboard input
+- The target window must stay focused while automation is running
+- Screen resolution and UI layout must match your image templates
 
 ---
 
-### 5. Verify the release
+## Important Notes
 
-- GitHub → Actions → Release → success
-- GitHub → Releases → `v0.0.2`
-- Confirm assets are present
-
----
-
-## What Not To Do
-
-- Do not commit binaries
-- Do not create releases manually in the GitHub UI
-- Do not reuse tags
-- Do not push incorrect tags
-- Do not rely on `git push` alone
+- Do not use the keyboard or mouse while a script is running
+- Screen resolution or UI changes can break image matching
+- Image templates must be BMP format
+- This tool does **not** modify the game or console
 
 ---
 
-## Mental Model (Keep This)
+## Thank You
 
-> Commits move code.
-> Tags create releases.
-> CI enforces correctness.
+Thank you to everyone who has contributed ideas, testing, feedback, and support.
 
-If this rule is followed, the release process is deterministic, auditable, and safe.
+---
 
+## Disclaimer
+
+Use this tool responsibly and in accordance with the rules of the software or game you are automating.
