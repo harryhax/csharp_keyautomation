@@ -6,11 +6,15 @@ static class KeyboardHelpers
 {
     public static void KeyDownName(IKeyboard keyboard, string name)
     {
+
+        Console.WriteLine("KEY DOWN: " + name);
         keyboard.KeyDown(KeyMap.Resolve(name));
     }
 
     public static void KeyUpName(IKeyboard keyboard, string name)
     {
+
+        Console.WriteLine("KEY UP: " + name);
         keyboard.KeyUp(KeyMap.Resolve(name));
     }
 

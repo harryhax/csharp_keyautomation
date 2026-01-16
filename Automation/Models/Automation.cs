@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+
 namespace Csharp_GTA_KeyAutomation.Automation.Models;
 
 public class AutomationRoot
@@ -12,11 +13,16 @@ public class AutomationScriptFile
     public string Title { get; set; } = "";
     public string Description { get; set; } = "";
 
-    public AutomationRun? Run { get; set; }
+    public AutomationScript? Script { get; set; }
 }
 
-
 public class AutomationScript
+{
+    public List<AutomationStep>? Setup { get; set; }
+    public AutomationLoop? Loop { get; set; }
+}
+
+public class AutomationLoop
 {
     public ScriptRepeat? Repeat { get; set; }
     public List<AutomationStep> Steps { get; set; } = new();
@@ -42,7 +48,7 @@ public class AutomationStep
     // wait
     public int Ms { get; set; }
 
-    // loop
+    // loop (step-level loop stays intact)
     public int Count { get; set; }
     public List<AutomationStep>? Steps { get; set; }
 

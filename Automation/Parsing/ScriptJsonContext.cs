@@ -38,6 +38,8 @@ namespace Csharp_GTA_KeyAutomation.Automation.Parsing;
 /// If new script model types are added (polymorphism, interfaces, inheritance),
 /// additional JsonSerializable / JsonDerivedType attributes may be required.
 /// </summary>
+
+
 [JsonSourceGenerationOptions(
     PropertyNameCaseInsensitive = true
 )]

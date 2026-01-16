@@ -142,7 +142,7 @@ class Program
         var baseDir = AppContext.BaseDirectory;
         var scriptsPath = Path.Combine(baseDir, "Scripts");
 
-        var scripts = ScriptLoader.LoadScripts(scriptsPath);
+        var scripts = ScriptLoader.LoadScriptDescriptors(scriptsPath);
 
         if (scripts.Count == 0)
         {
@@ -171,19 +171,20 @@ class Program
             return;
         }
 
-        var selected = scripts[index - 1];
+        var selectedMeta = scripts[index - 1];
+        var selected = ScriptLoader.LoadFullScript(selectedMeta.FilePath);
 
         Console.Clear();
         Console.WriteLine(selected.Title);
         Console.WriteLine(new string('-', selected.Title.Length));
-        Console.WriteLine(selected.Description);
+        Console.WriteLine(selectedMeta.Description);
         Console.WriteLine("\nPress ENTER to run, or Q to cancel.");
 
         var key = Console.ReadKey(true);
         if (key.Key == ConsoleKey.Q)
             return;
 
-        if (selected.Run == null)
+        if (selected.Script == null)
         {
             Console.WriteLine("No Run section defined.");
             Thread.Sleep(1500);
@@ -207,6 +208,6 @@ class Program
         var runtime = new AutomationRuntime(screen, keyboard);
         var engine = new AutomationEngine(runtime);
 
-        await engine.RunScriptAsync(selected.Run);
+        await engine.RunScriptAsync(selected.Script);
     }
 }

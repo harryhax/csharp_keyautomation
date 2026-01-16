@@ -31,6 +31,10 @@ static class KeyMap
         ["R1"] = Key.D3,
         ["R2"] = Key.D4,
 
+
+        ["RSTICK_LEFT"] = Key.LeftBracket,
+        ["RSTICK_RIGHT"] = Key.RightBracket,
+
     };
 
     public static Key Resolve(string name)

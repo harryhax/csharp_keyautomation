@@ -2,11 +2,11 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Csharp_GTA_KeyAutomation.Automation.Models;
 using Csharp_GTA_KeyAutomation.ImageCapture;
 using Csharp_GTA_KeyAutomation.ImageCompare;
 using Csharp_GTA_KeyAutomation.Input;
-using System.Diagnostics;
 
 namespace Csharp_GTA_KeyAutomation.Automation.Engine;
 
@@ -22,18 +22,27 @@ public class AutomationEngine
         _ctx = ctx;
     }
 
-    public async Task RunScriptAsync(AutomationRun run)
+    public async Task RunScriptAsync(AutomationScript script)
     {
-        int repeatCount = ResolveRepeatCount(run.Repeat);
+        // SETUP (runs once)
+        if (script.Setup != null)
+        {
+            foreach (var step in script.Setup)
+                await ExecuteStep(step);
+        }
+
+        // LOOP (repeat applies only here)
+        if (script.Loop == null || script.Loop.Steps.Count == 0)
+            return;
+
+        int repeatCount = ResolveRepeatCount(script.Loop.Repeat);
 
         for (int i = 0; i < repeatCount; i++)
         {
             Console.WriteLine($"\n--- Run iteration {i + 1}/{repeatCount} ---\n");
 
-            foreach (var step in run.Steps)
-            {
+            foreach (var step in script.Loop.Steps)
                 await ExecuteStep(step);
-            }
         }
     }
 
@@ -56,61 +65,39 @@ public class AutomationEngine
             return repeat.Default;
         }
 
-        throw new InvalidOperationException(
-            $"Unknown repeat mode: {repeat.Mode}"
-        );
-    }
-
-    static void ClearPreviousLine()
-    {
-        int width = Console.WindowWidth;
-        Console.SetCursorPosition(0, Console.CursorTop - 1);
-        Console.Write(new string(' ', width));
-        Console.SetCursorPosition(0, Console.CursorTop - 1);
+        throw new InvalidOperationException($"Unknown repeat mode: {repeat.Mode}");
     }
 
     private async Task ExecuteStep(AutomationStep step)
     {
         switch (step.Type)
         {
-
             case "instruction":
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
 
                     if (!string.IsNullOrWhiteSpace(step.Description))
-                    {
                         Console.WriteLine(step.Description);
-                    }
+
                     Console.ResetColor();
 
-                    // Print prompt and remember its line
                     Console.WriteLine();
                     int promptLine = Console.CursorTop;
                     Console.Write("Press ENTER to continue...");
                     Console.ReadLine();
 
-                    // Clear ONLY the prompt line
                     int width = Console.WindowWidth;
                     Console.SetCursorPosition(0, promptLine);
                     Console.Write(new string(' ', width));
-
-                    // Restore cursor to where execution should continue
                     Console.SetCursorPosition(0, promptLine);
-
                     break;
                 }
 
             case "tap":
-                KeyboardHelpers.TapName(
-                    _ctx.Keyboard,
-                    step.Key!,
-                    step.HoldMs
-                );
+                KeyboardHelpers.TapName(_ctx.Keyboard, step.Key!, step.HoldMs);
                 if (step.SleepAfterMs > 0)
                     await Task.Delay(step.SleepAfterMs);
                 break;
-
 
             case "keydown":
                 KeyboardHelpers.KeyDownName(_ctx.Keyboard, step.Key!);
@@ -128,12 +115,12 @@ public class AutomationEngine
                     {
                         int remainingSeconds =
                             (int)Math.Ceiling(remainingMs / 1000.0);
+
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.Write($"\r[WAIT] {remainingSeconds}s remaining...   ");
 
                         int delay = Math.Min(1000, remainingMs);
                         await Task.Delay(delay);
-
                         remainingMs -= delay;
                     }
 
@@ -155,9 +142,7 @@ public class AutomationEngine
                 break;
 
             default:
-                throw new InvalidOperationException(
-                    $"Unknown step type: {step.Type}"
-                );
+                throw new InvalidOperationException($"Unknown step type: {step.Type}");
         }
     }
 
