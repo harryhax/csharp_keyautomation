@@ -25,7 +25,8 @@
   <!--
 <PropertyGroup Condition="'$(RuntimeIdentifier)'=='linux-x64'">
   <DefineConstants>$(DefineConstants);LINUX</DefineConstants>
-</PropertyGroup-->
+</PropertyGroup
+-->
 
   <!-- macOS Intel minimum version: 10.15 -->
   <ItemGroup Condition="'$(RuntimeIdentifier)' == 'osx-x64'">
