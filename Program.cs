@@ -9,11 +9,34 @@ using Csharp_GTA_KeyAutomation.Automation.Parsing;
 using Csharp_GTA_KeyAutomation.ImageCapture;
 using Csharp_GTA_KeyAutomation.Input;
 using Csharp_GTA_KeyAutomation.Screen;
+using Csharp_GTA_KeyAutomation.Automation.Scripts;
+
 
 class Program
 {
     static async Task Main()
     {
+        ScriptRepositorySync.BaseUrl =
+       "https://raw.githubusercontent.com/YOURNAME/csharp_gta_scripts/main/";
+
+        var baseDir = AppContext.BaseDirectory;
+        var scriptsPath = Path.Combine(baseDir, "Scripts");
+
+        Console.WriteLine("Syncing scripts...");
+        Console.WriteLine();
+
+        try
+        {
+            await ScriptRepositorySync.SyncAsync(scriptsPath);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Script sync failed:");
+            Console.WriteLine(ex.Message);
+            Console.WriteLine("\nPress ENTER to continue anyway.");
+            Console.ReadLine();
+        }
+
         while (true)
         {
             Console.Clear();
