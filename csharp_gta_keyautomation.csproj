@@ -38,7 +38,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
 
-    <Content Include="Scripts\**\*.json">
+    <Content Include="Scripts_Custom\**\*.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
 

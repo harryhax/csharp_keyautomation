@@ -1,0 +1,148 @@
+{
+  "title": "Drive Destroyed Vehicles",
+  "Run": {
+    "steps": [
+      {
+        "type": "instruction",
+        "description": "Step 1. Find a parked car in the street."
+      },
+      {
+        "type": "instruction",
+        "description": "Step 2. Go to the passenger side and shoot out the window"
+      },
+      {
+        "type": "instruction",
+        "description": "Step 3. Stand beside the vehicle, close enough so you can get in. DON'T GET IN."
+      },
+      {
+        "type": "instruction",
+        "description": "Step 4. Go to your Weapons Wheel and select a 'Granade', so that it is in your hand."
+      },
+      {
+        "type": "instruction",
+        "description": "Step 5. When you continue, you will have 3 seconds to highlight your Remote Play application before the rest of the glitch takes place. Make sure you are focused on the game."
+      },
+
+      { "type": "wait", "ms": 3000 },
+
+      { "type": "keydown", "key": "L2" },
+      { "type": "wait", "ms": 500 },
+
+      { "type": "keydown", "key": "R2" },
+      { "type": "wait", "ms": 500 },
+
+      { "type": "keyup", "key": "L2" },
+      { "type": "wait", "ms": 500 },
+
+      { "type": "keyup", "key": "R2" },
+      { "type": "wait", "ms": 250 },
+
+      {
+        "type": "tap",
+        "key": "TRIANGLE",
+        "holdMs": 100,
+        "sleepAfterMs": 50,
+        "description": "Get in car"
+      },
+
+      {
+        "type": "tap",
+        "key": "OPTIONS",
+        "holdMs": 100,
+        "sleepAfterMs": 250,
+        "description": "Pause Menu"
+      },
+
+      {
+        "type": "tap",
+        "key": "DPAD_RIGHT",
+        "holdMs": 100,
+        "sleepAfterMs": 400,
+        "description": "Online"
+      },
+
+      {
+        "type": "tap",
+        "key": "CROSS",
+        "holdMs": 100,
+        "sleepAfterMs": 250,
+        "description": "Online"
+      },
+
+      {
+        "type": "tap",
+        "key": "DPAD_UP",
+        "holdMs": 50,
+        "sleepAfterMs": 50,
+        "description": "Quit to Main Menu"
+      },
+      {
+        "type": "tap",
+        "key": "DPAD_UP",
+        "holdMs": 50,
+        "sleepAfterMs": 50,
+        "description": "Quit to Story Mode"
+      },
+      {
+        "type": "tap",
+        "key": "DPAD_UP",
+        "holdMs":50,
+        "sleepAfterMs": 50,
+        "description": "Credit & Legal"
+      },
+      {
+        "type": "tap",
+        "key": "DPAD_UP",
+        "holdMs": 50,
+        "sleepAfterMs": 50,
+        "description": "Find New Session"
+      },
+      {
+        "type": "tap",
+        "key": "DPAD_UP",
+        "holdMs": 50,
+        "sleepAfterMs": 50,
+        "description": "Options"
+      },
+      {
+        "type": "tap",
+        "key": "DPAD_UP",
+        "holdMs":50,
+        "sleepAfterMs": 50,
+        "description": "Safety and Alerts"
+      },
+
+      {
+        "type": "tap",
+        "key": "CROSS",
+        "holdMs": 100,
+        "sleepAfterMs": 150,
+        "description": "Show Safety and Alerts"
+      },
+
+      { "type": "wait", "ms": 3000 },
+
+      {
+        "type": "tap",
+        "key": "CIRCLE",
+        "holdMs": 100,
+        "sleepAfterMs": 500,
+        "description": "Back"
+      },
+      {
+        "type": "tap",
+        "key": "CIRCLE",
+        "holdMs": 100,
+        "sleepAfterMs": 500,
+        "description": "Back"
+      },
+      {
+        "type": "tap",
+        "key": "CIRCLE",
+        "holdMs": 100,
+        "sleepAfterMs": 500,
+        "description": "Back"
+      }
+    ]
+  }
+}

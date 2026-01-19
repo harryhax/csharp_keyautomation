@@ -17,17 +17,17 @@ class Program
     static async Task Main()
     {
         ScriptRepositorySync.BaseUrl =
-       "https://raw.githubusercontent.com/YOURNAME/csharp_gta_scripts/main/";
+          "https://raw.githubusercontent.com/harryhax/harrykey_scripts/main/";
+
+        ScriptRepositorySync.Debug = false;
 
         var baseDir = AppContext.BaseDirectory;
-        var scriptsPath = Path.Combine(baseDir, "Scripts");
 
-        Console.WriteLine("Syncing scripts...");
-        Console.WriteLine();
+        Console.WriteLine("Syncing scripts...\n");
 
         try
         {
-            await ScriptRepositorySync.SyncAsync(scriptsPath);
+            await ScriptRepositorySync.SyncAsync(baseDir);
         }
         catch (Exception ex)
         {
@@ -36,6 +36,7 @@ class Program
             Console.WriteLine("\nPress ENTER to continue anyway.");
             Console.ReadLine();
         }
+
 
         while (true)
         {
@@ -64,7 +65,6 @@ class Program
 
                 default:
                     Console.WriteLine("Invalid selection.");
-                    Thread.Sleep(1000);
                     break;
             }
         }
@@ -163,21 +163,59 @@ class Program
         Console.Clear();
 
         var baseDir = AppContext.BaseDirectory;
-        var scriptsPath = Path.Combine(baseDir, "Scripts");
 
-        var scripts = ScriptLoader.LoadScriptDescriptors(scriptsPath);
+        var approvedPath = Path.Combine(baseDir, "Scripts");
+        var customPath = Path.Combine(baseDir, "Scripts_Custom");
 
-        if (scripts.Count == 0)
+        var approvedScripts = ScriptLoader.LoadScriptDescriptors(approvedPath);
+        var customScripts = ScriptLoader.LoadScriptDescriptors(customPath);
+
+        var menuMap = new List<(bool IsHeader, string Text, object? Script)>();
+
+        if (approvedScripts.Count > 0)
+        {
+            menuMap.Add((true, "=== Official Scripts ===", null));
+
+            foreach (var s in approvedScripts)
+                menuMap.Add((false, s.Title, s));
+        }
+
+        if (customScripts.Count > 0)
+        {
+            if (menuMap.Count > 0)
+                menuMap.Add((true, "", null));
+
+            menuMap.Add((true, "=== Custom Scripts ===", null));
+
+            foreach (var s in customScripts)
+                menuMap.Add((false, s.Title, s));
+        }
+
+        if (menuMap.All(m => m.IsHeader))
         {
             Console.WriteLine("No scripts found.");
             Thread.Sleep(1500);
             return;
         }
 
+        int displayIndex = 1;
+        var indexMap = new Dictionary<int, dynamic>();
+
         Console.WriteLine("Available scripts:\n");
 
-        for (int i = 0; i < scripts.Count; i++)
-            Console.WriteLine($"{i + 1}) {scripts[i].Title}");
+        foreach (var item in menuMap)
+        {
+            if (item.IsHeader)
+            {
+                Console.WriteLine(item.Text);
+            }
+            else
+            {
+                Console.WriteLine($"{displayIndex}) {item.Text}");
+                indexMap[displayIndex] = item.Script;
+                displayIndex++;
+            }
+        }
 
         Console.Write("\nSelect script number (or B to go back): ");
         var input = Console.ReadLine();
@@ -185,16 +223,15 @@ class Program
         if (string.Equals(input, "b", StringComparison.OrdinalIgnoreCase))
             return;
 
-        if (!int.TryParse(input, out int index) ||
-            index < 1 ||
-            index > scripts.Count)
+        if (!int.TryParse(input, out int selection) ||
+            !indexMap.ContainsKey(selection))
         {
             Console.WriteLine("Invalid selection.");
             Thread.Sleep(1500);
             return;
         }
 
-        var selectedMeta = scripts[index - 1];
+        var selectedMeta = indexMap[selection];
         var selected = ScriptLoader.LoadFullScript(selectedMeta.FilePath);
 
         Console.Clear();
@@ -214,15 +251,11 @@ class Program
             return;
         }
 
-
-        // Keyboard is platform-aware
         IScreenCapture screen =
             RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
                 ? new WindowsScreenCapture()
                 : new MacScreenCapture();
 
-
-        // Keyboard is platform-aware
         IKeyboard keyboard =
             RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
                 ? new WindowsKeyboard()
@@ -233,4 +266,6 @@ class Program
 
         await engine.RunScriptAsync(selected.Script);
     }
+
+
 }

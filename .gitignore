@@ -1,5 +1,5 @@
-bin
-obj
-dist
+bin/
+obj/
+dist/
 .DS_Store
-Scripts
+/Scripts/
