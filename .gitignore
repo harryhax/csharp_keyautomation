@@ -3,3 +3,4 @@ obj/
 dist/
 .DS_Store
 /Scripts/
+/Scripts_Custom/
