@@ -31,15 +31,19 @@ public class AutomationEngine
                 await ExecuteStep(step);
         }
 
-        // LOOP (repeat applies only here)
         if (script.Loop == null || script.Loop.Steps.Count == 0)
             return;
 
+        // PROMPT ONCE BEFORE LOOP
         int repeatCount = ResolveRepeatCount(script.Loop.Repeat);
+
+        Console.WriteLine();
+        Console.WriteLine($"Loop will run {repeatCount} time(s).");
+        Console.WriteLine();
 
         for (int i = 0; i < repeatCount; i++)
         {
-            Console.WriteLine($"\n--- Run iteration {i + 1}/{repeatCount} ---\n");
+            Console.WriteLine($"--- Iteration {i + 1}/{repeatCount} ---");
 
             foreach (var step in script.Loop.Steps)
                 await ExecuteStep(step);
@@ -73,25 +77,25 @@ public class AutomationEngine
         switch (step.Type)
         {
             case "instruction":
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
 
-                    if (!string.IsNullOrWhiteSpace(step.Description))
-                        Console.WriteLine(step.Description);
+                if (!string.IsNullOrWhiteSpace(step.Description))
+                    Console.WriteLine(step.Description);
 
-                    Console.ResetColor();
+                Console.ResetColor();
 
-                    Console.WriteLine();
-                    int promptLine = Console.CursorTop;
-                    Console.Write("Press ENTER to continue...");
-                    Console.ReadLine();
+                Console.WriteLine();
+                int promptLine = Console.CursorTop;
+                Console.Write("Press ENTER to continue...");
+                Console.ReadLine();
 
-                    int width = Console.WindowWidth;
-                    Console.SetCursorPosition(0, promptLine);
-                    Console.Write(new string(' ', width));
-                    Console.SetCursorPosition(0, promptLine);
-                    break;
-                }
+                int width = Console.WindowWidth;
+                Console.SetCursorPosition(0, promptLine);
+                Console.Write(new string(' ', width));
+                Console.SetCursorPosition(0, promptLine);
+                break;
+            }
 
             case "tap":
                 KeyboardHelpers.TapName(_ctx.Keyboard, step.Key!, step.HoldMs);
@@ -108,26 +112,26 @@ public class AutomationEngine
                 break;
 
             case "wait":
+            {
+                int remainingMs = step.Ms;
+
+                while (remainingMs > 0)
                 {
-                    int remainingMs = step.Ms;
+                    int remainingSeconds =
+                        (int)Math.Ceiling(remainingMs / 1000.0);
 
-                    while (remainingMs > 0)
-                    {
-                        int remainingSeconds =
-                            (int)Math.Ceiling(remainingMs / 1000.0);
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.Write($"\r[WAIT] {remainingSeconds}s remaining...   ");
 
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.Write($"\r[WAIT] {remainingSeconds}s remaining...   ");
-
-                        int delay = Math.Min(1000, remainingMs);
-                        await Task.Delay(delay);
-                        remainingMs -= delay;
-                    }
-
-                    Console.ResetColor();
-                    Console.Write("\r[WAIT] Done.                    \n");
-                    break;
+                    int delay = Math.Min(1000, remainingMs);
+                    await Task.Delay(delay);
+                    remainingMs -= delay;
                 }
+
+                Console.ResetColor();
+                Console.Write("\r[WAIT] Done.                    \n");
+                break;
+            }
 
             case "loop":
                 for (int i = 0; i < step.Count; i++)
